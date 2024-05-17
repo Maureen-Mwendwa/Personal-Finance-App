@@ -17,6 +17,8 @@ class MyCustomFormState extends State<MyCustomForm> {
   //and allows validation of the form.
   //Note: This is a 'GlobalKey<FormState>', not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  // Expose the _formKey as a getter
+  GlobalKey<FormState> get formKey => _formKey;
   final _passwordController =
       TextEditingController(); //creating an instance of the TextEditingController class using TextEditingController() constructor and assigning it to the variable _passwordController which is private to indicate that it is accessible only within the current class or file. TextEditingController is used to manage the text input in text fields. It provides various properties and methods to interact with the text, such as retrieving the current text value, setting the text value, and adding listeners to monitor text changes. By creating an instance of TextEditingController, you can associate it with a TextField or TextFormField widget using the controller property. This allows you to access and control the text input programmatically. i.e. TextField(controller: _passwordController). By doing this, you can access the text value entered by the user using _passwordController.text, set the initial text value using _passwordController.text = 'initial value', or listen to text changes using _passwordController.addListener((){/*handle text changes*/}. NB: TextEditingController instances should be disposed of when they are no longer needed to avoid memory leaks.
   @override

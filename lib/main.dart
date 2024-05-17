@@ -5,6 +5,7 @@ import 'package:spendsense/screens/expense_tracking_page.dart';
 import 'package:spendsense/screens/finance_page.dart';
 import 'package:spendsense/screens/group_page.dart';
 import 'package:spendsense/statemanagement/expense_provider.dart';
+import 'package:spendsense/widget/login_screen.dart';
 import 'package:spendsense/widget/mycustomform.dart';
 
 void main() {
@@ -110,9 +111,7 @@ class HomePage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.login, color: Colors.blue, size: 30),
                 tooltip: 'Login',
-                onPressed: () {
-                  print('Login pressed');
-                },
+                onPressed: () => LoginScreen(),
               ),
               const SizedBox(width: 20),
               IconButton(
