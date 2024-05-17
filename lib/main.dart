@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
+import 'package:spendsense/screens/expense_tracking_page.dart';
+import 'package:spendsense/screens/finance_page.dart';
+import 'package:spendsense/screens/group_page.dart';
+import 'package:spendsense/statemanagement/expense_provider.dart';
+import 'package:spendsense/widget/mycustomform.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => ExpenseProvider()),
+      Provider(create: (context) => ExpenseTrackingPage()),
+      Provider(create: (context) => FinancePage()),
+      Provider(create: (context) => GroupPage()),
+    ], child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,14 +25,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Finance App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: HomePage(),
-    );
+        title: 'My Finance App',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: HomePage(),
+        routes: {
+          '/expensetrackingpage': (context) => ExpenseTrackingPage(),
+          '/grouppage': (context) => GroupPage(),
+          '/financepage': (context) => FinancePage(),
+        });
   }
 }
 
@@ -64,7 +81,29 @@ class HomePage extends StatelessWidget {
                     color: Colors.green, size: 30),
                 tooltip: 'Create A New Account',
                 onPressed: () {
-                  print('Account pressed');
+                  //Show a dialog to create a new account
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Create Account'),
+                      content: MyCustomForm(),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                        // TextButton(
+                        //   onPressed: () => print('Create button Clicked'),
+                        //   //call the form submission logic from custom form
+                        //   //Assuming having a method like 'submitForm' in the form widget e.g.
+                        //   //if(MyCustomForm.submitForm()){
+                        //   //Implement account creation logic here Navigator.pop(context);}
+
+                        //   child: Text('Create'),
+                        // ),
+                      ],
+                    ),
+                  );
                 },
               ),
               const SizedBox(width: 20),
@@ -129,14 +168,16 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     width: 105.0,
                     child: ElevatedButton(
-                      onPressed: () => {print('Track Expenses button pressed')},
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/expensetrackingpage'),
                       child: Text('Track Expenses'),
                     ),
                   ),
                   SizedBox(
                     width: 105.0,
                     child: ElevatedButton(
-                      onPressed: () => {print('Manage groups button pressed')},
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/grouppage'),
                       child: Text('Manage Groups'),
                     ),
                   ),
@@ -144,7 +185,7 @@ class HomePage extends StatelessWidget {
                     width: 105.0,
                     child: ElevatedButton(
                       onPressed: () =>
-                          {print('Analyze finances button pressed')},
+                          Navigator.pushNamed(context, '/financepage'),
                       child: Text('Analyze Finances'),
                     ),
                   ),
