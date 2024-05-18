@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:spendsense/screens/expense_tracking_page.dart';
+import 'package:spendsense/screens/categories_screen.dart';
 import 'package:spendsense/widget/mycustomform.dart';
 
 // Define a constant users map that stores user credentials.
@@ -83,7 +83,7 @@ class LoginScreen extends StatelessWidget {
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => ExpenseTrackingPage(),
+            builder: (context) => CategoriesScreen(),
           ),
         );
       },

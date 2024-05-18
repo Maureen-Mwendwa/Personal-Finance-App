@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
-import 'package:spendsense/screens/expense_tracking_page.dart';
+import 'package:spendsense/screens/categories_screen.dart';
 import 'package:spendsense/screens/finance_page.dart';
 import 'package:spendsense/screens/group_page.dart';
-import 'package:spendsense/statemanagement/expense_provider.dart';
+import 'package:spendsense/statemanagement/expenses_provider.dart';
 import 'package:spendsense/widget/login_screen.dart';
 import 'package:spendsense/widget/mycustomform.dart';
 
 void main() {
-  runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (context) => ExpenseProvider()),
-      Provider(create: (context) => ExpenseTrackingPage()),
-      Provider(create: (context) => FinancePage()),
-      Provider(create: (context) => GroupPage()),
-    ], child: const MyApp()),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,19 +18,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'My Finance App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: HomePage(),
-        routes: {
-          '/expensetrackingpage': (context) => ExpenseTrackingPage(),
-          '/grouppage': (context) => GroupPage(),
-          '/financepage': (context) => FinancePage(),
-        });
+    return ChangeNotifierProvider(
+      create: (context) => ExpensesProvider(),
+      child: MaterialApp(
+          title: 'My Finance App',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: HomePage(),
+          routes: {
+            //'/addexpensescreen': (context) => AddExpenseScreen(),
+            '/categoriesscreen': (context) => CategoriesScreen(),
+            //'/subcategoriesscreen': (context) => SubcategoriesScreen(),
+            '/grouppage': (context) => GroupPage(),
+            '/financepage': (context) => FinancePage(),
+          }),
+    );
   }
 }
 
