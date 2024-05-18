@@ -47,19 +47,19 @@ class HomePage extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         appBar: AppBar(
-            leading: Builder(
-              //The leading widget is in the top left, the actions are in the top right. The Builder is used to ensure that the context refers to that part of the subtree. That way this code snippet can be used even inside the very code that is creating the [Scaffold] (in which case, without the [Builder], the 'context' wouldn't be able to see the [Scaffold])
-              builder: (BuildContext context) {
-                return IconButton(
-                  icon: const Icon(Icons.menu),
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  tooltip:
-                      MaterialLocalizations.of(context).openAppDrawerTooltip,
-                );
-              },
-            ),
+            // leading: Builder(
+            //The leading widget is in the top left, the actions are in the top right. The Builder is used to ensure that the context refers to that part of the subtree. That way this code snippet can be used even inside the very code that is creating the [Scaffold] (in which case, without the [Builder], the 'context' wouldn't be able to see the [Scaffold])
+            // builder: (BuildContext context) {
+            // return IconButton(
+            //   icon: const Icon(Icons.menu),
+            //   onPressed: () {
+            //     Scaffold.of(context).openDrawer();
+            //   },
+            //   tooltip:
+            //       MaterialLocalizations.of(context).openAppDrawerTooltip,
+            // );
+            // }
+            // ),
             title: Text('Welcome!',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -93,15 +93,10 @@ class HomePage extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                           child: Text('Cancel'),
                         ),
-                        // TextButton(
-                        //   onPressed: () => print('Create button Clicked'),
                         //   //call the form submission logic from custom form
                         //   //Assuming having a method like 'submitForm' in the form widget e.g.
                         //   //if(MyCustomForm.submitForm()){
                         //   //Implement account creation logic here Navigator.pop(context);}
-
-                        //   child: Text('Create'),
-                        // ),
                       ],
                     ),
                   );
@@ -111,7 +106,22 @@ class HomePage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.login, color: Colors.blue, size: 30),
                 tooltip: 'Login',
-                onPressed: () => LoginScreen(),
+                onPressed: () {
+                  //Show a dialog to create a new account
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Login to your account'),
+                      content: LoginScreen(),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
               const SizedBox(width: 20),
               IconButton(
@@ -162,30 +172,31 @@ class HomePage extends StatelessWidget {
               SizedBox(height: 20.0),
               // Action buttons
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 105.0,
+                    width: 300.0,
                     child: ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/expensetrackingpage'),
-                      child: Text('Track Expenses'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 105.0,
-                    child: ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/grouppage'),
-                      child: Text('Manage Groups'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 105.0,
-                    child: ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/financepage'),
-                      child: Text('Analyze Finances'),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.yellow),
+                      onPressed: () {
+                        //Show a dialog to create a new account
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Create Account'),
+                            content: MyCustomForm(),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Cancel'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Text('Get Started',
+                          style: TextStyle(color: Colors.black)),
                     ),
                   ),
                 ],
