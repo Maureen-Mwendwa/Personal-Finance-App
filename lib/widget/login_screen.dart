@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:spendsense/screens/expense_tracking_page.dart';
+import 'package:spendsense/widget/mycustomform.dart';
 
 // Define a constant users map that stores user credentials.
 const users = {
@@ -24,9 +25,42 @@ class LoginScreen extends StatelessWidget {
     });
   }
 
-  Future<String?> _signupUser(SignupData data) async {
-    // Here you should add logic to create a new user
-    return await Future.delayed(loginTime).then((_) => null);
+  Future<String?> _signupUser(BuildContext context) async {
+    // Show a dialog to create a new account
+    return showDialog<String?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Create a new account'),
+          content: MyCustomForm(),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, 'cancel');
+              },
+              child: Text('Cancel'),
+            ),
+            // TextButton(
+            //   onPressed: () {
+            //     // Here you should add logic to handle form submission
+            //     // For demonstration purposes, we will just pop with a success message
+            //     Navigator.pop(context, 'success');
+            //   },
+            //   child: Text('Submit'),
+            // ),
+          ],
+        );
+      },
+    );
+    // .then((result) {
+    //   if (result == 'success') {
+    //     // Add your user creation logic here, e.g., call to an API
+    //     return Future.delayed(loginTime)
+    //         .then((_) => null); // Simulate delay for user creation
+    //   } else {
+    //     return null; // User cancelled the signup process
+    //   }
+    // });
   }
 
   Future<String?> _recoverPassword(String name) async {
@@ -45,7 +79,7 @@ class LoginScreen extends StatelessWidget {
       title: 'SpendSense',
       logo: const AssetImage('assets/SpendSenseLogo.jpeg'),
       onLogin: _authUser,
-      onSignup: _signupUser,
+      onSignup: (signupData) => _signupUser(context),
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
