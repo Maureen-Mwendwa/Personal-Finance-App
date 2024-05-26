@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spendsense/screens/analysis_screen.dart';
 import 'package:spendsense/screens/subcategories_screen.dart';
+import 'package:spendsense/statemanagement/expenses_provider.dart';
 import '../models/category.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -87,12 +89,71 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final DateTime now = DateTime.now();
+    final String currentMonth = "${now.month}/${now.year}";
+    final String currentDate = "${now.day}";
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Categories'), // Title of the AppBar.
-      ),
+      // appBar: AppBar(
+      //   title: Text('Categories'), // Title of the AppBar.
+      // ),
       body: Column(
         children: [
+          SizedBox(
+            height: 100.0,
+            child: Card(
+              margin: EdgeInsets.all(10.0),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage('assets/SpendSenseLogo.jpeg'),
+                  radius: 50,
+                ),
+                title: Text('Welcome Back', style: TextStyle(fontSize: 20)),
+                trailing: Container(
+                  color: Colors.pink[200],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        currentMonth, // Display current month and year
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 10),
+                      ),
+                      Text(
+                        currentDate, // Display current date
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Total spendings container
+          Consumer<ExpensesProvider>(
+            builder: (context, expensesProvider, child) {
+              double totalSpendings = expensesProvider.expenses
+                  .fold(0.0, (sum, expense) => sum + expense.amount);
+              return Container(
+                margin: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(10.0),
+                width: double
+                    .infinity, //make the container take the full width of the screen.
+                height: 70.0,
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(20.0), // Rounded corners
+                ),
+                child: Center(
+                  child: Text(
+                    'Total Spendings: \$${totalSpendings.toStringAsFixed(2)}',
+                    style:
+                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+            },
+          ),
           Expanded(
             child: PageView(
               controller:
@@ -111,7 +172,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             ),
           ),
           SizedBox(
-            height: 100.0, // Fixed height for the bottom navigation bar.
+            height: 60.0, // Fixed height for the bottom navigation bar.
             child: BottomNavigationBar(
               type: BottomNavigationBarType
                   .fixed, // Fixed type to show all items.
@@ -156,21 +217,68 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       shrinkWrap: true, // GridView will take only the necessary space.
       itemCount: categories.length, // Number of items in the grid.
       itemBuilder: (ctx, i) {
+        final category = categories[i];
+        final imagePath = _getCategoryImagePath(category.name);
         return Card(
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SubcategoriesScreen(
-                    category: categories[
-                        i]), // Navigate to the subcategories screen when tapped.
-              ));
+                builder: (context) => SubcategoriesScreen(category: category),
+              )); // Navigate to the subcategories screen when tapped.
             },
-            child: Center(
-              child: Text(categories[i].name), // Display the category name.
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(imagePath),
+                  fit:
+                      BoxFit.cover, // Ensures the image covers the entire card.
+                ),
+                borderRadius: BorderRadius.circular(10.0), // Rounded corners
+              ),
+              child: Center(
+                child: Text(
+                  category.name, // Display the category name.
+                  style: TextStyle(
+                    backgroundColor:
+                        Colors.black54, // Semi-transparent background for text.
+                    color: Colors.white, // White text color.
+                    fontWeight: FontWeight.bold, // Bold text.
+                    fontSize: 16.0, // Font size.
+                  ),
+                ),
+              ),
             ),
           ),
         );
       },
     );
+  }
+
+  // Method to get the image path based on category name.
+  String _getCategoryImagePath(String categoryName) {
+    switch (categoryName) {
+      case 'Housing':
+        return 'assets/Housing.jpg';
+      case 'Healthcare':
+        return 'assets/Healthcare.jpg';
+      case 'Personalcare':
+        return 'assets/Personalcare.jpg';
+      case 'Food and Dining':
+        return 'assets/FoodDining.jpg';
+      case 'Transportation':
+        return 'assets/Transportation.jpg';
+      case 'Financial':
+        return 'assets/Financial.jpg';
+      case 'Education':
+        return 'assets/Education.jpg';
+      case 'Subscriptions and Memberships':
+        return 'assets/Subscriptions.jpg';
+      case 'Entertainment and Recreation':
+        return 'assets/Entertainment.jpg';
+      case 'Charitable Giving':
+        return 'assets/Charitable giving.jpg';
+      default:
+        return 'assets/SpendSenseLogo.jpeg';
+    }
   }
 }
