@@ -103,28 +103,34 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             child: Card(
               margin: EdgeInsets.all(10.0),
               child: ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/SpendSenseLogo.jpeg'),
-                  radius: 50,
+                leading: const Image(
+                  image: AssetImage('assets/SpendSenseLogo.jpeg'),
                 ),
-                title: Text('Welcome Back', style: TextStyle(fontSize: 20)),
-                trailing: Container(
-                  color: Colors.pink[200],
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        currentMonth, // Display current month and year
+                title: Text('Spending Awareness & Money Management',
+                    style: TextStyle(fontSize: 20)),
+                trailing: Stack(
+                  children: [
+                    Icon(Icons.calendar_today, size: 45.0, color: Colors.green),
+                    Positioned(
+                      // top: -7,
+                      // right: -5,
+                      // child: Container(
+                      //   padding: EdgeInsets.all(3.0),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.black,
+                      //     borderRadius: BorderRadius.circular(5.0),
+                      //   ),
+                      child: Text(
+                        '$currentMonth\n$currentDate',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 10),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            color: Colors.black),
+                        textAlign: TextAlign.center,
                       ),
-                      Text(
-                        currentDate, // Display current date
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                    ],
-                  ),
+                      //),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -208,50 +214,56 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   /// Builds a grid of category cards.
   Widget _buildCategoryGrid(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5, // Number of columns in the grid.
-        mainAxisSpacing: 10.0, // Vertical spacing between grid items.
-        crossAxisSpacing: 5.0, // Horizontal spacing between grid items.
-      ),
-      shrinkWrap: true, // GridView will take only the necessary space.
-      itemCount: categories.length, // Number of items in the grid.
-      itemBuilder: (ctx, i) {
-        final category = categories[i];
-        final imagePath = _getCategoryImagePath(category.name);
-        return Card(
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SubcategoriesScreen(category: category),
-              )); // Navigate to the subcategories screen when tapped.
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit:
-                      BoxFit.cover, // Ensures the image covers the entire card.
+    return LayoutBuilder(builder: (context, constraints) {
+      //The LayoutBuilder helps in deciding the number of columns based on the available width.
+      // Calculate the number of columns based on the screen width.
+      int crossAxisCount = (constraints.maxWidth / 150)
+          .floor(); // The number of columns (crossAxisCount) is calculated by dividing the maximum width by the desired width of each card (e.g., 150 pixels).
+      return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: 10.0, // Vertical spacing between grid items.
+          crossAxisSpacing: 5.0, // Horizontal spacing between grid items.
+        ),
+        shrinkWrap: true, // GridView will take only the necessary space.
+        itemCount: categories.length, // Number of items in the grid.
+        itemBuilder: (ctx, i) {
+          final category = categories[i];
+          final imagePath = _getCategoryImagePath(category.name);
+          return Card(
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => SubcategoriesScreen(category: category),
+                )); // Navigate to the subcategories screen when tapped.
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(imagePath),
+                    fit: BoxFit
+                        .cover, // Ensures the image covers the entire card.
+                  ),
+                  borderRadius: BorderRadius.circular(10.0), // Rounded corners
                 ),
-                borderRadius: BorderRadius.circular(10.0), // Rounded corners
-              ),
-              child: Center(
-                child: Text(
-                  category.name, // Display the category name.
-                  style: TextStyle(
-                    backgroundColor:
-                        Colors.black54, // Semi-transparent background for text.
-                    color: Colors.white, // White text color.
-                    fontWeight: FontWeight.bold, // Bold text.
-                    fontSize: 16.0, // Font size.
+                child: Center(
+                  child: Text(
+                    category.name, // Display the category name.
+                    style: TextStyle(
+                      backgroundColor: Colors
+                          .black54, // Semi-transparent background for text.
+                      color: Colors.white, // White text color.
+                      fontWeight: FontWeight.bold, // Bold text.
+                      fontSize: 16.0, // Font size.
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    });
   }
 
   // Method to get the image path based on category name.
