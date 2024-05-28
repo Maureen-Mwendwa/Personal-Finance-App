@@ -49,4 +49,9 @@ class ExpensesProvider with ChangeNotifier {
     categoryExpenses.sort((a, b) => b.amount.compareTo(a.amount));
     return categoryExpenses.first;
   }
+
+  // Method to get the total amount of all expenses
+  double get totalAmount {
+    return _expenses.fold(0.0, (sum, expense) => sum + expense.amount);
+  }
 }
