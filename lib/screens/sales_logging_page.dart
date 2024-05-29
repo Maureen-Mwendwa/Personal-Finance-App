@@ -2,44 +2,72 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spendsense/models/product.dart';
+import 'package:spendsense/models/sale.dart';
 import 'package:spendsense/statemanagement/product_provider.dart';
 import 'package:intl/intl.dart';
 
 class SalesLoggingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductProvider>(context);
-    final totalSales = provider.sales
-        .fold(0.0, (sum, sale) => sum + (sale.sellingPrice * sale.quantity));
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Log Sales - ${DateFormat.yMMMd().format(DateTime.now())}'),
       ),
       body: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(16.0),
-            color: Colors.yellow[100],
-            child: Text(
-              'Total Sales for the Day: \$${totalSales.toStringAsFixed(2)}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+          Consumer<ProductProvider>(
+            builder: (context, provider, child) {
+              final totalSales = provider.sales.fold(
+                0.0,
+                (sum, sale) => sum + (sale.sellingPrice * sale.quantity),
+              );
+
+              return Container(
+                padding: EdgeInsets.all(16.0),
+                color: Colors.yellow[100],
+                child: Text(
+                  'Total Sales for the Day: \$${totalSales.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              );
+            },
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: provider.products.length,
-              itemBuilder: (context, index) {
-                final product = provider.products[index];
-                return ListTile(
-                  title: Text(product.name),
-                  subtitle:
-                      Text('Selling Price: \$${product.initialSellingPrice}'),
-                  trailing: IconButton(
-                    icon: Icon(Icons.add_shopping_cart),
-                    onPressed: () =>
-                        _showLogSaleDialog(context, provider, product),
-                  ),
+            child: Consumer<ProductProvider>(
+              builder: (context, provider, child) {
+                return ListView.builder(
+                  itemCount: provider.sales.length,
+                  itemBuilder: (context, index) {
+                    final sale = provider.sales[index];
+                    // final product = provider.products.firstWhere(
+                    //   (p) => p.name == sale.productName,
+                    // );
+
+                    return ListTile(
+                      title:
+                          Text('${sale.productName} (${sale.quantity} units)'),
+                      subtitle: Text(
+                        'Selling Price: \$${sale.sellingPrice.toStringAsFixed(2)}',
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              _showEditSaleDialog(context, provider, sale);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              provider.deleteSale(sale);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -114,6 +142,82 @@ class SalesLoggingPage extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               child: Text('Log Sale'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEditSaleDialog(
+      BuildContext context, ProductProvider provider, Sale sale) {
+    final quantityController =
+        TextEditingController(text: sale.quantity.toString());
+    final sellingPriceController =
+        TextEditingController(text: sale.sellingPrice.toString());
+    DateTime selectedDate = sale.date;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit Sale for ${sale.productName}'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: quantityController,
+                  decoration: InputDecoration(labelText: 'Quantity Sold'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: sellingPriceController,
+                  decoration: InputDecoration(labelText: 'Final Selling Price'),
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Select Date:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+                    if (picked != null && picked != selectedDate)
+                      selectedDate = picked;
+                  },
+                  child: Text("Select Date"),
+                ),
+                Text(
+                  "${DateFormat.yMMMd().format(selectedDate)}",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                provider.updateSale(
+                  sale,
+                  int.parse(quantityController.text),
+                  double.parse(sellingPriceController.text),
+                  selectedDate,
+                );
+                Navigator.of(context).pop();
+              },
+              child: Text('Update Sale'),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
