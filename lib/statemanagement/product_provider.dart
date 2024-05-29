@@ -75,6 +75,36 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  void deleteSale(Sale sale) {
+    _sales.remove(sale);
+    notifyListeners();
+  }
+
+  void updateSale(
+      Sale existingSale, int quantity, double sellingPrice, DateTime date) {
+    final updatedSale = Sale(
+      productName: existingSale.productName,
+      quantity: quantity,
+      sellingPrice: sellingPrice,
+      costPrice: existingSale.costPrice,
+      date: date,
+    );
+
+    final saleIndex = _sales.indexWhere((sale) => sale == existingSale);
+    if (saleIndex != -1) {
+      _sales[saleIndex] = updatedSale;
+
+      // Update the remaining quantity of the product
+      final product =
+          _products.firstWhere((p) => p.name == existingSale.productName);
+      final productIndex = _products.indexOf(product);
+      _products[productIndex].remainingQuantity +=
+          existingSale.quantity - quantity;
+
+      notifyListeners();
+    }
+  }
+
   double get totalRevenue {
     return _sales.fold(
         0, (sum, sale) => sum + (sale.sellingPrice * sale.quantity));
