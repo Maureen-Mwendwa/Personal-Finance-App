@@ -61,7 +61,7 @@ class ProductProvider extends ChangeNotifier {
       DateTime saleDate) {
     final sale = Sale(
       productName: product.name,
-      sellingPrice: product.initialSellingPrice,
+      sellingPrice: sellingPrice,
       quantity: quantitySold,
       date: saleDate,
       costPrice: product.costPrice,
