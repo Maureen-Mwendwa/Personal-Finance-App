@@ -29,26 +29,46 @@ class ProductListPage extends StatelessWidget {
       ),
       body: Consumer<ProductProvider>(
         builder: (context, provider, child) {
-          return ListView.builder(
-            itemCount: provider.products.length,
-            itemBuilder: (context, index) {
-              final product = provider.products[index];
-              return ListTile(
-                title: Text(product.name),
-                subtitle: Text(
-                  'Cost: \$${product.costPrice}, Selling: \$${product.initialSellingPrice}, Initial Qty: ${product.initialQuantity}, Remaining: ${product.remainingQuantity}',
+          double totalValuation = provider.products.fold(
+            0.0,
+            (sum, product) =>
+                sum + (product.initialSellingPrice * product.remainingQuantity),
+          );
+
+          return Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(16.0),
+                color: Colors.amber,
+                child: Text(
+                  'Total Valuation: \$${totalValuation.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    provider.deleteProduct(product.name);
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: provider.products.length,
+                  itemBuilder: (context, index) {
+                    final product = provider.products[index];
+                    return ListTile(
+                      title: Text(product.name),
+                      subtitle: Text(
+                        'Cost: \$${product.costPrice}, Selling: \$${product.initialSellingPrice}, Initial Qty: ${product.initialQuantity}, Remaining: ${product.remainingQuantity}',
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          provider.deleteProduct(product.name);
+                        },
+                      ),
+                      onTap: () {
+                        _showEditProductModal(context, product);
+                      },
+                    );
                   },
                 ),
-                onTap: () {
-                  _showEditProductModal(context, product);
-                },
-              );
-            },
+              ),
+            ],
           );
         },
       ),
