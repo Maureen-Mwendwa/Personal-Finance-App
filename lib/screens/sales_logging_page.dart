@@ -39,9 +39,9 @@ class SalesLoggingPage extends StatelessWidget {
                   itemCount: provider.sales.length,
                   itemBuilder: (context, index) {
                     final sale = provider.sales[index];
-                    // final product = provider.products.firstWhere(
-                    //   (p) => p.name == sale.productName,
-                    // );
+                    final product = provider.products.firstWhere(
+                      (p) => p.name == sale.productName,
+                    );
 
                     return ListTile(
                       title:
@@ -52,6 +52,12 @@ class SalesLoggingPage extends StatelessWidget {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          IconButton(
+                            icon: Icon(Icons.add_shopping_cart),
+                            onPressed: () {
+                              _showLogSaleDialog(context, provider, product);
+                            },
+                          ),
                           IconButton(
                             icon: Icon(Icons.edit),
                             onPressed: () {
