@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spendsense/screens/analysis_screen.dart';
+import 'package:spendsense/screens/group_page.dart';
+import 'package:spendsense/screens/product_list_page.dart';
 import 'package:spendsense/screens/subcategories_screen.dart';
 import 'package:spendsense/statemanagement/expenses_provider.dart';
 import '../models/category.dart';
@@ -194,6 +196,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   pageController
                       .jumpToPage(index); // Navigate to the selected page.
                 });
+                if (index == 2) {
+                  // Navigate to the AnalyticsScreen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProductListPage()),
+                  );
+                } else if (index == 3) {
+                  // Navigate to the ProductListPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GroupPage()),
+                  );
+                }
               },
               items: const [
                 BottomNavigationBarItem(
@@ -203,6 +218,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.analytics),
                   label: 'Analytics',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.production_quantity_limits),
+                  label: 'Products',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.group_add),
+                  label: 'Grouppage',
                 ),
               ],
             ),
