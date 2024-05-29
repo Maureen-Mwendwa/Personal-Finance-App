@@ -2,14 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
 import 'package:spendsense/screens/categories_screen.dart';
-import 'package:spendsense/screens/finance_page.dart';
 import 'package:spendsense/screens/group_page.dart';
+import 'package:spendsense/screens/product_analysis_screen.dart';
+import 'package:spendsense/screens/product_list_page.dart';
+import 'package:spendsense/screens/sales_logging_page.dart';
 import 'package:spendsense/statemanagement/expenses_provider.dart';
+import 'package:spendsense/statemanagement/product_provider.dart';
 import 'package:spendsense/widget/login_screen.dart';
 import 'package:spendsense/widget/mycustomform.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ExpensesProvider()),
+        ChangeNotifierProvider(create: (context) => ProductProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,24 +29,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ExpensesProvider(),
-      child: MaterialApp(
-          title: 'My Finance App',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: HomePage(),
-          routes: {
-            //'/addexpensescreen': (context) => AddExpenseScreen(),
-            '/categoriesscreen': (context) => CategoriesScreen(),
-            //'/subcategoriesscreen': (context) => SubcategoriesScreen(),
-            '/grouppage': (context) => GroupPage(),
-            '/financepage': (context) => FinancePage(),
-          }),
-    );
+    return MaterialApp(
+        title: 'My Finance App',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: HomePage(),
+        routes: {
+          //'/addexpensescreen': (context) => AddExpenseScreen(),
+          '/categoriesscreen': (context) => CategoriesScreen(),
+          //'/subcategoriesscreen': (context) => SubcategoriesScreen(),
+          '/grouppage': (context) => GroupPage(),
+          '/productlistpage': (context) => ProductListPage(),
+          '/salesloggingpage': (context) => SalesLoggingPage(),
+          '/productanalysisscreen': (context) => VisualizationPage(),
+        });
   }
 }
 
