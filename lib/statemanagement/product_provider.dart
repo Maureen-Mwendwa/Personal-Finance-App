@@ -57,7 +57,8 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void logSale(Product product, int quantitySold, DateTime saleDate) {
+  void logSale(Product product, int quantitySold, double sellingPrice,
+      DateTime saleDate) {
     final sale = Sale(
       productName: product.name,
       sellingPrice: product.initialSellingPrice,
