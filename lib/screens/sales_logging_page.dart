@@ -52,6 +52,9 @@ class SalesLoggingPage extends StatelessWidget {
   void _showLogSaleDialog(
       BuildContext context, ProductProvider provider, Product product) {
     final quantityController = TextEditingController();
+    final sellingPriceController = TextEditingController(
+      text: product.initialSellingPrice.toString(),
+    );
     DateTime selectedDate = DateTime.now();
 
     showDialog(
@@ -66,6 +69,11 @@ class SalesLoggingPage extends StatelessWidget {
                 TextField(
                   controller: quantityController,
                   decoration: InputDecoration(labelText: 'Quantity Sold'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: sellingPriceController,
+                  decoration: InputDecoration(labelText: 'Final Selling Price'),
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 10),
@@ -100,6 +108,7 @@ class SalesLoggingPage extends StatelessWidget {
                 provider.logSale(
                   product,
                   int.parse(quantityController.text),
+                  double.parse(sellingPriceController.text),
                   selectedDate,
                 );
                 Navigator.of(context).pop();
