@@ -53,6 +53,9 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void deleteProduct(String productName) {
+    //Remove associated sales
+    _sales.removeWhere((sale) => sale.productName == productName);
+    //Remove the product
     _products.removeWhere((product) => product.name == productName);
     notifyListeners();
   }
