@@ -79,8 +79,25 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void deleteSale(Sale sale) {
-    _sales.remove(sale);
-    notifyListeners();
+    // Find the product associated with the sale
+    Product? product;
+    for (var prod in products) {
+      if (prod.name == sale.productName) {
+        product = prod;
+        break;
+      }
+    }
+
+    if (product != null) {
+      // Update the product's remaining quantity
+      product.remainingQuantity += sale.quantity;
+
+      // Remove the sale from the list of sales
+      sales.remove(sale);
+
+      // Notify listeners to update the UI
+      notifyListeners();
+    }
   }
 
   void updateSale(
