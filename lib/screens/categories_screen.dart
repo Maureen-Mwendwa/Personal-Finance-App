@@ -106,7 +106,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               margin: EdgeInsets.all(10.0),
               child: ListTile(
                 leading: const Image(
-                  image: AssetImage('assets/SpendSenseLogo.jpeg'),
+                  image: AssetImage('assets/SpendSenseLogo.webp'),
                 ),
                 title: Text('Spending Awareness & Money Management',
                     style: TextStyle(fontSize: 20)),
