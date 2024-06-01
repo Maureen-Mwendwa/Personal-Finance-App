@@ -77,7 +77,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlutterLogin(
       title: 'SpendSense',
-      logo: const AssetImage('assets/SpendSenseLogo.jpeg'),
+      logo: const AssetImage('assets/SpendSenseLogo.webp'),
       onLogin: _authUser,
       onSignup: (signupData) => _signupUser(context),
       onSubmitAnimationCompleted: () {
