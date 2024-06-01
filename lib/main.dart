@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           '/grouppage': (context) => GroupPage(),
           '/productlistpage': (context) => ProductListPage(),
           '/salesloggingpage': (context) => SalesLoggingPage(),
-          '/productanalysisscreen': (context) => VisualizationPage(),
+          '/productanalysisscreen': (context) => DashboardScreen(),
         });
   }
 }
@@ -150,7 +150,7 @@ class HomePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
-                    image: AssetImage('assets/Logo.jpg'),
+                    image: AssetImage('assets/Logo.webp'),
                     fit: BoxFit.cover,
                   ),
                 ),
