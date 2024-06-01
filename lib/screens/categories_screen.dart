@@ -293,27 +293,27 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   String _getCategoryImagePath(String categoryName) {
     switch (categoryName) {
       case 'Housing':
-        return 'assets/Housing.jpg';
+        return 'assets/Housing.webp';
       case 'Healthcare':
-        return 'assets/Healthcare.jpg';
+        return 'assets/Healthcare.webp';
       case 'Personalcare':
-        return 'assets/Personalcare.jpg';
+        return 'assets/Personalcare.webp';
       case 'Food and Dining':
-        return 'assets/FoodDining.jpg';
+        return 'assets/FoodDining.webp';
       case 'Transportation':
-        return 'assets/Transportation.jpg';
+        return 'assets/Transportation.webp';
       case 'Financial':
-        return 'assets/Financial.jpg';
+        return 'assets/Financial.webp';
       case 'Education':
-        return 'assets/Education.jpg';
+        return 'assets/Education.webp';
       case 'Subscriptions and Memberships':
-        return 'assets/Subscriptions.jpg';
+        return 'assets/Subscriptions.webp';
       case 'Entertainment and Recreation':
-        return 'assets/Entertainment.jpg';
+        return 'assets/Entertainment.webp';
       case 'Charitable Giving':
-        return 'assets/Charitable giving.jpg';
+        return 'assets/Charitable giving.webp';
       default:
-        return 'assets/SpendSenseLogo.jpeg';
+        return 'assets/SpendSenseLogo.webp';
     }
   }
 }
