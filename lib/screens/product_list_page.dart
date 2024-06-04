@@ -5,24 +5,45 @@ import 'package:spendsense/screens/product_modal.dart';
 import 'package:spendsense/statemanagement/product_provider.dart';
 import 'package:intl/intl.dart';
 
-class ProductListPage extends StatelessWidget {
+class ProductListPage extends StatefulWidget {
+  @override
+  State<ProductListPage> createState() => _ProductListPageState();
+}
+
+class _ProductListPageState extends State<ProductListPage> {
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
             'Product Inventory - ${DateFormat.yMMMd().format(DateTime.now())}'),
+        centerTitle: true,
+        backgroundColor: Colors.lime,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(25),
+                bottomLeft: Radius.circular(25))),
         actions: [
           IconButton(
-            icon: Icon(Icons.show_chart),
+            icon: Icon(Icons.attach_money),
+            tooltip: 'Navigate to enter/view your sales',
             onPressed: () {
-              Navigator.pushNamed(context, '/productanalysisscreen');
+              Navigator.pushNamed(context, '/salesloggingpage');
             },
           ),
           IconButton(
-            icon: Icon(Icons.attach_money),
+            icon: Icon(Icons.show_chart),
+            tooltip: 'View Visualizations',
             onPressed: () {
-              Navigator.pushNamed(context, '/salesloggingpage');
+              Navigator.pushNamed(context, '/productanalysisscreen');
             },
           ),
         ],
@@ -35,8 +56,36 @@ class ProductListPage extends StatelessWidget {
                 sum + (product.initialSellingPrice * product.remainingQuantity),
           );
 
+          // Filter the products based on the search query
+          final filteredProducts = provider.products
+              .where((product) => product.name
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()))
+              .toList();
+
           return Column(
             children: [
+              SizedBox(height: 10),
+              Container(
+                // search bar
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search products',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(16.0),
                 color: Colors.amber,
@@ -47,9 +96,9 @@ class ProductListPage extends StatelessWidget {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: provider.products.length,
+                  itemCount: filteredProducts.length,
                   itemBuilder: (context, index) {
-                    final product = provider.products[index];
+                    final product = filteredProducts[index];
                     return ListTile(
                       title: Text(product.name),
                       subtitle: Text(
