@@ -24,9 +24,9 @@ class _ProductListPageState extends State<ProductListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Product Inventory - ${DateFormat.yMMMd().format(DateTime.now())}'),
+            'Product Inventory - Date Today ${DateFormat.yMMMd().format(DateTime.now())}'),
         centerTitle: true,
-        backgroundColor: Colors.lime,
+        backgroundColor: Colors.purple[300],
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(25),
@@ -66,60 +66,80 @@ class _ProductListPageState extends State<ProductListPage> {
           return Column(
             children: [
               SizedBox(height: 10),
-              Container(
-                // search bar
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search products',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+              SizedBox(
+                width: 250,
+                child: Container(
+                  // search bar
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search products',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
                     ),
                   ),
                 ),
               ),
               SizedBox(height: 10),
-              Container(
-                padding: EdgeInsets.all(16.0),
-                color: Colors.amber,
-                child: Text(
-                  'Total Valuation: \$${totalValuation.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              SizedBox(
+                width: 500,
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  color: Colors.amber,
+                  child: Text(
+                    'Total Valuation: \$${totalValuation.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
+              SizedBox(height: 10),
               Expanded(
                 child: ListView.builder(
                   itemCount: filteredProducts.length,
                   itemBuilder: (context, index) {
                     final product = filteredProducts[index];
-                    return ListTile(
-                      title: Text(product.name),
-                      subtitle: Text(
-                        'Cost: \$${product.costPrice}, Selling: \$${product.initialSellingPrice}, Initial Qty: ${product.initialQuantity}, Remaining: ${product.remainingQuantity}, Date: ${DateFormat.yMMMd().format(product.date)}',
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              _showEditProductModal(context, provider, product);
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {
-                              provider.deleteProduct(product.name);
-                            },
-                          ),
-                        ],
+                    return Material(
+                      child: ListTile(
+                        title: Text(product.name),
+                        subtitle: Text(
+                          'Cost: \$${product.costPrice}, Selling: \$${product.initialSellingPrice}, Initial Qty: ${product.initialQuantity}, Remaining: ${product.remainingQuantity}, Date: ${DateFormat.yMMMd().format(product.date)}',
+                        ),
+                        selected: true,
+                        selectedTileColor: Colors.amber[200],
+                        onTap: () {},
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                _showEditProductModal(
+                                    context, provider, product);
+                              },
+                            ),
+                            Container(
+                              child: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  provider.deleteProduct(product.name);
+                                },
+                              ),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              alignment: Alignment.center,
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -130,10 +150,12 @@ class _ProductListPageState extends State<ProductListPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
+        tooltip: 'Add Products',
         onPressed: () {
           _showAddProductModal(context);
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
   }
