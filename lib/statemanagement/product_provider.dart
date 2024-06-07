@@ -87,6 +87,8 @@ class ProductProvider extends ChangeNotifier {
   // Method to log a sale
   void logSale(Product product, int quantitySold, double sellingPrice,
       DateTime saleDate) {
+    final normalizedDate =
+        DateTime(saleDate.year, saleDate.month, saleDate.day);
     if (product.remainingQuantity < quantitySold) {
       throw Exception('Not enough stock available');
     }
@@ -95,7 +97,7 @@ class ProductProvider extends ChangeNotifier {
       productName: product.name, // Set the product name
       sellingPrice: sellingPrice, // Set the selling price for the sale
       quantity: quantitySold, // Set the quantity sold
-      date: saleDate, // Set the date of the sale
+      date: normalizedDate, // Set the date of the sale
       costPrice: product.costPrice, // Set the cost price of the product
     );
 
@@ -215,11 +217,13 @@ class ProductProvider extends ChangeNotifier {
         {}; // Initialize an empty map to store total profit/loss for each date
 
     for (var sale in _sales) {
+      final normalizedDate =
+          DateTime(sale.date.year, sale.date.month, sale.date.day);
       // Iterate over each sale in the _sales list
-      salesMap[sale.date] = (salesMap[sale.date] ?? 0) +
+      salesMap[normalizedDate] = (salesMap[normalizedDate] ?? 0) +
           (sale.sellingPrice *
               sale.quantity); // Update the total sales for the sale's date
-      profitLossMap[sale.date] = (profitLossMap[sale.date] ?? 0) +
+      profitLossMap[normalizedDate] = (profitLossMap[normalizedDate] ?? 0) +
           ((sale.sellingPrice - sale.costPrice) *
               sale.quantity); // Update the total profit/loss for the sale's date
     }
