@@ -22,6 +22,10 @@ class ProductProvider extends ChangeNotifier {
     required int initialQuantity, // Initial quantity of the product (required)
     required DateTime date, // Date when the product was added (required)
   }) {
+    //Check if the product already exists
+    if (_products.any((product) => product.name == name)) {
+      throw Exception('Product with this name already exists');
+    }
     final newProduct = Product(
       // Create a new Product object
       name: name, // Set the product name
@@ -83,6 +87,9 @@ class ProductProvider extends ChangeNotifier {
   // Method to log a sale
   void logSale(Product product, int quantitySold, double sellingPrice,
       DateTime saleDate) {
+    if (product.remainingQuantity < quantitySold) {
+      throw Exception('Not enough stock available');
+    }
     final sale = Sale(
       // Create a new Sale object
       productName: product.name, // Set the product name
