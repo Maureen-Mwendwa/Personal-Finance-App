@@ -205,8 +205,16 @@ class ProductProvider extends ChangeNotifier {
   // Method to get a list of sales for a specific date
   List<Sale> salesByDate(DateTime date) {
     return _sales
-        .where((sale) => sale.date == date)
+        .where((sale) =>
+            sale.date.year == date.year &&
+            sale.date.month == date.month &&
+            sale.date.day == date.day)
         .toList(); // Filter the list of sales by date and convert to a list
+  }
+
+  double totalSalesByDate(DateTime date) {
+    return salesByDate(date)
+        .fold(0.0, (sum, sale) => sum + (sale.sellingPrice * sale.quantity));
   }
 
   // Method to get daily sales data
