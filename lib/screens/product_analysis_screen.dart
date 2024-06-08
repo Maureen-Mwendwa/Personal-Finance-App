@@ -15,7 +15,7 @@ class DashboardScreen extends StatelessWidget {
           //Retrieve data from the provider
           final dailySalesData = provider.getDailySalesData();
           final productRevenueData = provider.getProductRevenueData();
-          // final profitLossData = provider.getProfitLossData();
+          final profitLossData = provider.getProfitLossData();
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -42,6 +42,30 @@ class DashboardScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   ProfitLossChart(data: dailySalesData),
+                  SizedBox(height: 20),
+                  Text('Product Profit/Loss Breakdown',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: profitLossData.length,
+                    itemBuilder: (context, index) {
+                      final productProfitLoss = profitLossData[index];
+                      return ListTile(
+                        title: Text(productProfitLoss.product),
+                        trailing: Text(
+                          productProfitLoss.amount > 0
+                              ? '+${productProfitLoss.amount}'
+                              : '${productProfitLoss.amount}',
+                          style: TextStyle(
+                              color: productProfitLoss.amount > 0
+                                  ? Colors.green
+                                  : Colors.red),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
