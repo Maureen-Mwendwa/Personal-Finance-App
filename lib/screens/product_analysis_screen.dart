@@ -15,7 +15,7 @@ class DashboardScreen extends StatelessWidget {
           //Retrieve data from the provider
           final dailySalesData = provider.getDailySalesData();
           final productRevenueData = provider.getProductRevenueData();
-          final profitLossData = provider.getProfitLossData();
+          // final profitLossData = provider.getProfitLossData();
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -37,11 +37,11 @@ class DashboardScreen extends StatelessWidget {
                   ProductRevenueChart(data: productRevenueData),
                   SizedBox(height: 20),
                   Text(
-                    'Profit/Loss',
+                    'Daily Profit and Loss',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  ProfitLossChart(data: profitLossData),
+                  ProfitLossChart(data: dailySalesData),
                 ],
               ),
             ),
