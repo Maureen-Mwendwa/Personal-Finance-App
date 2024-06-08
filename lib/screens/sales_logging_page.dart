@@ -6,27 +6,51 @@ import 'package:spendsense/models/sale.dart';
 import 'package:spendsense/statemanagement/product_provider.dart';
 import 'package:intl/intl.dart';
 
-class SalesLoggingPage extends StatelessWidget {
+class SalesLoggingPage extends StatefulWidget {
+  @override
+  State<SalesLoggingPage> createState() => _SalesLoggingPageState();
+}
+
+class _SalesLoggingPageState extends State<SalesLoggingPage> {
+  DateTime _selectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log Sales - ${DateFormat.yMMMd().format(DateTime.now())}'),
+        title: Text('Log Sales - ${DateFormat.yMMMd().format(_selectedDate)}'),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.calendar_today),
+              onPressed: () async {
+                DateTime? picked = await showDatePicker(
+                  context: context,
+                  initialDate: _selectedDate,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(3000),
+                );
+                if (picked != null && picked != _selectedDate) {
+                  setState(() {
+                    _selectedDate = picked;
+                  });
+                }
+              })
+        ],
       ),
       body: Column(
         children: [
           Consumer<ProductProvider>(
             builder: (context, provider, child) {
-              final totalSales = provider.sales.fold(
-                0.0,
-                (sum, sale) => sum + (sale.sellingPrice * sale.quantity),
-              );
+              final totalSales = provider.totalSalesByDate(_selectedDate);
+              //  provider.sales.fold(
+              //   0.0,
+              //   (sum, sale) => sum + (sale.sellingPrice * sale.quantity),
+              // );
 
               return Container(
                 padding: EdgeInsets.all(16.0),
                 color: Colors.yellow[100],
                 child: Text(
-                  'Total Sales for the Day: \$${totalSales.toStringAsFixed(2)}',
+                  'Total Sales For ${DateFormat.yMMMd().format(_selectedDate)}: \$ ${totalSales.toStringAsFixed(2)}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               );
