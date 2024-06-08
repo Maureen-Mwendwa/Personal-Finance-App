@@ -1,51 +1,66 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:spendsense/models/product.dart';
-import 'package:spendsense/models/profitloss.dart';
+import 'package:flutter/material.dart';
+import 'package:spendsense/models/dailysales.dart';
 
-class ProfitLossBarChart extends StatelessWidget {
-  final List<Product> products;
+class ProfitLossChart extends StatelessWidget {
+  // Declare a final list of DailySales objects that will hold the data to be displayed
+  final List<DailySales> data;
 
-  ProfitLossBarChart(this.products);
+  // Constructor for the DailySalesChart widget that takes in a required list of DailySales objects
+  ProfitLossChart({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    final List<ProfitLoss> data = products.map((product) {
-      final profitLoss = (product.initialSellingPrice - product.costPrice) *
-          product.initialQuantity;
-      return ProfitLoss(product.name, profitLoss);
-    }).toList();
-
-    List<BarChartGroupData> barGroups = data.map((entry) {
-      int index = data.indexOf(entry);
-      return BarChartGroupData(
-        x: index,
-        barRods: [
-          BarChartRodData(
-            toY: entry.amount,
-            color: entry.amount >= 0 ? Colors.green : Colors.red,
-          ),
-        ],
-      );
-    }).toList();
-
-    return BarChart(
-      BarChartData(
-        barGroups: barGroups,
-        titlesData: FlTitlesData(
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (double value, TitleMeta meta) {
-                int index = value.toInt();
-                if (index < 0 || index >= data.length) return Text('');
-                return Text(data[index].product);
-              },
+    return AspectRatio(
+      // Aspect ratio of the chart, determines the width-to-height ratio
+      aspectRatio: 1.7,
+      // BarChart widget from the fl_chart package to display a bar chart
+      child: BarChart(
+        // BarChartData object to provide data and configuration for the bar chart
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          borderData: FlBorderData(
+            border: const Border(
+              top: BorderSide.none,
+              right: BorderSide.none,
+              left: BorderSide(width: 1),
+              bottom: BorderSide(width: 1),
             ),
           ),
+          gridData: const FlGridData(show: false),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: true),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  final date =
+                      DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                  return Text('${date.day}/${date.month}/${date.year}');
+                },
+              ),
+            ),
+          ),
+          barGroups: data.map((dailySales) {
+            return BarChartGroupData(
+              // Use a simple integer as the x-value to represent the position in the list
+              x: dailySales.date.millisecondsSinceEpoch,
+              // List of BarChartRodData objects representing individual bars
+              barRods: [
+                // Create a BarChartRodData object for the bar
+                BarChartRodData(
+                  fromY: 0, // The starting Y value of the bar
+                  toY: dailySales
+                      .profitLoss, // The ending Y value of the bar, representing the total sales
+                  width: 15,
+                  // Set the color of the bar: green for non-negative sales, red for negative sales
+                  color: dailySales.profitLoss >= 0 ? Colors.green : Colors.red,
+                ),
+              ],
+            );
+          }).toList(),
         ),
       ),
     );
