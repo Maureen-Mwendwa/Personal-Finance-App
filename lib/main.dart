@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
@@ -11,7 +13,21 @@ import 'package:spendsense/statemanagement/product_provider.dart';
 import 'package:spendsense/widget/login_screen.dart';
 import 'package:spendsense/widget/mycustomform.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+            apiKey: "AIzaSyAVTtw5GrmJU5Z7FvyRu5UA-FNKKyZ2q18",
+            authDomain: "spendsense-9c0f9.firebaseapp.com",
+            projectId: "spendsense-9c0f9",
+            storageBucket: "spendsense-9c0f9.appspot.com",
+            messagingSenderId: "901157527088",
+            appId: "1:901157527088:web:85fbc6c3cb2c3c96c957f5",
+            measurementId: "G-YTXQ6Q03DV"));
+  } else {
+    await Firebase.initializeApp();
+  }
   runApp(
     MultiProvider(
       providers: [
@@ -171,7 +187,7 @@ class HomePage extends StatelessWidget {
                   )),
               SizedBox(height: 10.0),
               Text(
-                'Your all-in-one financial companion for meticulous expense tracking, collaborative group finance management, and insghtful business financial analysis.',
+                'Your all-in-one financial companion for meticulous expense tracking and insghtful business financial analysis.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
