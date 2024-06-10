@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "901157527088",
+    "project_id": "spendsense-9c0f9",
+    "storage_bucket": "spendsense-9c0f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901157527088:android:add718c19a0e0034c957f5",
+        "android_client_info": {
+          "package_name": "com.MaureenMwendwa.spendsense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuhCpc0Eg6rndreydbBHMcO3OtOL06F0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
